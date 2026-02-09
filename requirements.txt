@@ -21,12 +21,11 @@ jsonschema==4.26.0
 jsonschema-specifications==2025.9.1
 MarkupSafe==3.0.3
 narwhals==2.15.0
-numpy==2.4.1
 packaging==26.0
 pandas==2.3.3
 pdfminer.six==20251230
 pdfplumber==0.11.9
-pillow==12.1.0
+pillow==10.3.0
 protobuf==6.33.4
 pyarrow==23.0.0
 pycparser==3.0
@@ -55,3 +54,7 @@ tzdata==2025.3
 urllib3==2.6.3
 uvicorn==0.40.0
 watchdog==6.0.0
+numpy==1.26.4
+opencv-python-headless==4.9.0.80
+
+

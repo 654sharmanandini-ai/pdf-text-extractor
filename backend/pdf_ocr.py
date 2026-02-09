@@ -1,23 +1,44 @@
-import fitz  # PyMuPDF
+import cv2
+import numpy as np
 import pytesseract
 from PIL import Image
-import io
 
-# IMPORTANT: Tesseract executable path
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
-def extract_text_from_images(pdf_path: str) -> str:
-    doc = fitz.open(pdf_path)
+def preprocess_image(image):
+    # PIL → numpy conversion
+    if isinstance(image, Image.Image):
+        image = np.array(image)
+
+    # ensure valid numpy array
+    if image is None or not isinstance(image, np.ndarray):
+        return None
+
+    # grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # noise remove
+    gray = cv2.medianBlur(gray, 3)
+
+    # threshold
+    _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+
+    return thresh
+
+
+def extract_text_from_images(images):
     text = ""
 
-    for page in doc:
-        images = page.get_images(full=True)
-        for img in images:
-            xref = img[0]
-            base_image = doc.extract_image(xref)
-            image_bytes = base_image["image"]
+    for img in images:
+        processed = preprocess_image(img)
 
-            image = Image.open(io.BytesIO(image_bytes))
-            text += pytesseract.image_to_string(image)
+        if processed is None:
+            continue
+
+        extracted = pytesseract.image_to_string(
+            processed,
+            config="--oem 3 --psm 6"
+        )
+
+        text += extracted + "\n"
 
     return text

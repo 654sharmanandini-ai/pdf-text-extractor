@@ -8,7 +8,7 @@ app = FastAPI()
 @app.post("/extract")
 async def extract_pdf(file: UploadFile = File(...)):
     temp_file = f"temp_{file.filename}"
-
+    print(temp_file)
     with open(temp_file, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
